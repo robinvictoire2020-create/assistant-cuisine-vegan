@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Assistant cuisine végane</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f4f4;
+      margin: 0;
+    }
+    .container {
+      max-width: 700px;
+      margin: 60px auto;
+      background: white;
+      padding: 30px;
+      border-radius: 12px;
+      text-align: center;
+      box-shadow: 0 0 15px rgba(0,0,0,0.1);
+    }
+    h1, h2 {
+      margin-bottom: 20px;
+    }
+    .button {
+      display: inline-block;
+      margin: 10px;
+      padding: 10px 20px;
+      background: #4CAF50;
+      color: white;
+      text-decoration: none;
+      border-radius: 8px;
+      font-size: 16px;
+      cursor: pointer;
+      border: none;
+    }
+    .button.secondary {
+      background: #2196F3;
+    }
+    .button.danger {
+      background: #f44336;
+    }
+    .hidden {
+      display: none;
+    }
+    input, select, textarea {
+      padding: 8px;
+      margin: 8px 0;
+      width: 80%;
+      max-width: 400px;
+    }
+    ul {
+      text-align: left;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <!-- ÉTAPE 1 : ACCUEIL -->
+    <div id="step1">
+      <h1>Salut ! Si tu es vegan ou que tu veux redécouvrir la cuisine végane alors tu es sur le bon site 🌱</h1>
+      <button class="button" onclick="goToStep(2)">Continuer</button>
+    </div>
+
+    <!-- ÉTAPE 2 : CHAUD / FROID -->
+    <div id="step2" class="hidden">
+      <h2>Tu veux un plat chaud ou un plat froid ?</h2>
+      <button class="button" onclick="setChoice('typePlat','chaud'); goToStep(3)">Chaud</button>
+      <button class="button" onclick="setChoice('typePlat','froid'); goToStep(3)">Froid</button>
+    </div>
+
+    <!-- ÉTAPE 3 : SALÉ / SUCRÉ -->
+    <div id="step3" class="hidden">
+      <h2>Tu préfères plutôt salé ou sucré ?</h2>
+      <button class="button" onclick="setChoice('gout','sale'); goToStep(4)">Salé</button>
+      <button class="button" onclick="setChoice('gout','sucre'); goToStep(4)">Sucré</button>
+    </div>
+
+    <!-- ÉTAPE 4 : FÉCULENTS / LÉGUMES / PROTÉINES -->
+    <div id="step4" class="hidden">
+      <h2>Tu aimes plutôt quoi aujourd’hui ?</h2>
+      <button class="button" onclick="setChoice('categorie','feculents'); goToStep(5)">Féculents (pâtes, riz, pommes de terre)</button>
+      <button class="button secondary" onclick="setChoice('categorie','legumes'); goToStep(5)">Légumes (salades, poêlées, soupes)</button>
+      <button class="button" onclick="setChoice('categorie','proteines'); goToStep(5)">Protéines végétales (tofu, pois chiches, lentilles)</button>
+    </div>
+
+    <!-- ÉTAPE 5 : ALLERGIES / ALIMENTS À ÉVITER -->
+    <div id="step5" class="hidden">
+      <h2>As-tu des allergies ou des aliments que tu n’aimes pas ?</h2>
+      <p>(Exemples : gluten, soja, fruits à coque, champignons…)</p>
+      <textarea id="allergies" rows="3" placeholder="Écris ici ce que tu veux éviter"></textarea>
+      <br>
+      <button class="button" onclick="goToStep(6)">Continuer</button>
+    </div>
+
+    <!-- ÉTAPE 6 : BUDGET -->
+    <div id="step6" class="hidden">
+      <h2>Quel budget tu veux mettre pour ton repas ?</h2>
+      <select id="budget">
+        <option value="5">Moins de 5€</option>
+        <option value="10">Moins de 10€</option>
+        <option value="20">Moins de 20€</option>
+        <option value="100">Je m’en fiche du budget</option>
+      </select>
+      <br><br>
+      <button class="button" onclick="afficherResultats()">Voir les plats proposés</button>
+    </div>
+
+    <!-- ÉTAPE 7 : RÉSULTATS -->
+    <div id="step7" class="hidden">
+      <h2>Voici des idées de plats pour toi :</h2>
+      <div id="resultats"></div>
+      <br>
+      <button class="button secondary" onclick="goToStep(2)">Recommencer</button>
+    </div>
+  </div>
+
+  <script>
+    const choix = {
+      typePlat: null,
+      gout: null,
+      categorie: null
+    };
+
+    function goToStep(n) {
+      for (let i = 1; i <= 7; i++) {
+        document.getElementById('step' + i).classList.add('hidden');
+      }
+      document.getElementById('step' + n).classList.remove('hidden');
+    }
+
+    function setChoice(key, value) {
+      choix[key] = value;
+    }
+
+    function afficherResultats() {
+      const allergies = document.getElementById('allergies').value.toLowerCase();
+      const budget = parseInt(document.getElementById('budget').value, 10);
+
+      let plats = [];
+
+      // Base selon type chaud/froid + salé/sucré + catégorie
+      if (choix.typePlat === 'chaud' && choix.gout === 'sale' && choix.categorie === 'feculents') {
+        plats = [
+          "Gratin de pommes de terre et légumes",
+          "Pâtes complètes au pesto vegan",
+          "Risotto aux champignons"
+        ];
+      } else if (choix.typePlat === 'chaud' && choix.gout === 'sale' && choix.categorie === 'legumes') {
+        plats = [
+          "Soupe de légumes de saison",
+          "Poêlée de légumes au tofu",
+          "Ratatouille maison"
+        ];
+      } else if (choix.typePlat === 'chaud' && choix.gout === 'sale' && choix.categorie === 'proteines') {
+        plats = [
+          "Curry de lentilles corail",
+          "Chili sin carne (haricots rouges)",
+          "Tofu mariné avec légumes rôtis"
+        ];
+      } else if (choix.typePlat === 'chaud' && choix.gout === 'sucre') {
+        plats = [
+          "Crêpes vegan",
+          "Porridge chaud aux fruits",
+          "Gâteau moelleux au chocolat vegan"
+        ];
+      } else if (choix.typePlat === 'froid' && choix.gout === 'sale' && choix.categorie === 'feculents') {
+        plats = [
+          "Salade de pâtes aux légumes",
+          "Taboulé au quinoa",
+          "Salade de riz aux pois chiches"
+        ];
+      } else if (choix.typePlat === 'froid' && choix.gout === 'sale' && choix.categorie === 'legumes') {
+        plats = [
+          "Salade de crudités avec houmous",
+          "Wraps de légumes et houmous",
+          "Salade de tomates, concombre et tofu"
+        ];
+      } else if (choix.typePlat === 'froid' && choix.gout === 'sale' && choix.categorie === 'proteines') {
+        plats = [
+          "Salade de pois chiches",
+          "Buddha bowl (lentilles, légumes, céréales)",
+          "Salade de haricots rouges et maïs"
+        ];
+      } else if (choix.typePlat === 'froid' && choix.gout === 'sucre') {
+        plats = [
+          "Smoothie bowl aux fruits",
+          "Salade de fruits frais",
+          "Yaourt soja avec granola"
+        ];
+      } else {
+        plats = [
+          "Buddha bowl complet",
+          "Assiette composée (féculents + légumes + protéines)",
+          "Plat vegan surprise"
+        ];
+      }
+
+      // Filtrage simple selon allergies / aliments à éviter
+      if (allergies.includes("gluten")) {
+        plats = plats.filter(p => !p.toLowerCase().includes("pâtes") && !p.toLowerCase().includes("risotto") && !p.toLowerCase().includes("taboulé"));
+      }
+      if (allergies.includes("soja")) {
+        plats = plats.filter(p => !p.toLowerCase().includes("tofu") && !p.toLowerCase().includes("yaourt soja"));
+      }
+      if (allergies.includes("noix") || allergies.includes("fruits à coque")) {
+        plats = plats.filter(p => !p.toLowerCase().includes("granola"));
+      }
+
+      // Filtrage très simple selon budget (juste pour l’exemple)
+      if (budget <= 5) {
+        plats = plats.slice(0, 2);
+      } else if (budget <= 10) {
+        plats = plats.slice(0, 3);
+      }
+
+      const div = document.getElementById('resultats');
+      if (plats.length === 0) {
+        div.innerHTML = "<p>Aucun plat ne correspond exactement à tes critères, mais tu peux essayer une salade de légumes, des lentilles ou des pommes de terre rôties, c’est presque toujours possible 🌱</p>";
+      } else {
+        div.innerHTML = "<ul>" + plats.map(p => "<li>" + p + "</li>").join("") + "</ul>";
+      }
+
+      goToStep(7);
+    }
+
+    // On commence à l’étape 1
+    goToStep(1);
+  </script>
+
+</body>
+</html>
