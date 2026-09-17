@@ -153,23 +153,25 @@
 
       let plats = [];
 
-const images = {
-  "Gratin de pommes de terre et légumes": "https://images.unsplash.com/photo-1604908177522-432c5d3e6f1f",
-  "Pâtes complètes au pesto vegan": "https://images.unsplash.com/photo-1525755662778-989d0524087e",
-  "Risotto aux champignons": "https://images.unsplash.com/photo-1604908554024-5f3e6f2eefd1",
-  "Soupe de légumes de saison": "https://images.unsplash.com/photo-1543353071-087092ec393e",
-  "Poêlée de légumes au tofu": "https://images.unsplash.com/photo-1512621776951-a57141f2eefd",
-  "Ratatouille maison": "https://images.unsplash.com/photo-1504674900247-0877df9cc836",
-  "Curry de lentilles corail": "https://images.unsplash.com/photo-1605475127913-3f6e9d8bca1a",
-  "Chili sin carne": "https://images.unsplash.com/photo-1552332386-f8dd00dc2f85",
-  "Tofu mariné avec légumes rôtis": "https://images.unsplash.com/photo-1512621776951-a57141f2eefd",
-  "Crêpes vegan": "https://images.unsplash.com/photo-1587731350924-5b1c1e3f5f3e",
-  "Porridge chaud aux fruits": "https://images.unsplash.com/photo-1512621776951-a57141f2eefd",
-  "Gâteau moelleux au chocolat vegan": "https://images.unsplash.com/photo-1601972599720-6f3fdf6f9a3b",
-  "Smoothie bowl aux fruits": "https://images.unsplash.com/photo-1506084868230-bb9d95c24759",
-  "Salade de fruits frais": "https://images.unsplash.com/photo-1490474418585-ba9bad8fd0ea"
-};
-
+      const images = {
+        "Gratin de pommes de terre et légumes": "https://images.unsplash.com/photo-1604908177522-432c5d3e6f1f",
+        "Pâtes complètes au pesto vegan": "https://images.unsplash.com/photo-1525755662778-989d0524087e",
+        "Risotto aux champignons": "https://images.unsplash.com/photo-1604908554024-5f3e6f2eefd1",
+        "Soupe de légumes de saison": "https://images.unsplash.com/photo-1543353071-087092ec393e",
+        "Poêlée de légumes au tofu": "https://images.unsplash.com/photo-1512621776951-a57141f2eefd",
+        "Ratatouille maison": "https://images.unsplash.com/photo-1504674900247-0877df9cc836",
+        "Curry de lentilles corail": "https://images.unsplash.com/photo-1605475127913-3f6e9d8bca1a",
+        "Chili sin carne": "https://images.unsplash.com/photo-1552332386-f8dd00dc2f85",
+        "Tofu mariné avec légumes rôtis": "https://images.unsplash.com/photo-1512621776951-a57141f2eefd",
+        "Crêpes vegan": "https://images.unsplash.com/photo-1587731350924-5b1c1e3f5f3e",
+        "Porridge chaud aux fruits": "https://images.unsplash.com/photo-1512621776951-a57141f2eefd",
+        "Gâteau moelleux au chocolat vegan": "https://images.unsplash.com/photo-1601972599720-6f3fdf6f9a3b",
+        "Smoothie bowl aux fruits": "https://images.unsplash.com/photo-1506084868230-bb9d95c24759",
+        "Salade de fruits frais": "https://images.unsplash.com/photo-1490474418585-ba9bad8fd0ea",
+        "Jus d’orange frais": "https://images.unsplash.com/photo-1571689936045-7e3c3e5c8e2f",
+        "Smoothie banane-fraise": "https://images.unsplash.com/photo-1497534446932-c925b458314e",
+        "Thé glacé maison": "https://images.unsplash.com/photo-1507914372361-3dbe39f6a4f6"
+      };
 
       if (choix.gout === "sale") {
         if (choix.categorie === "feculents") {
@@ -191,7 +193,7 @@ const images = {
           plats = ["Crêpes vegan", "Porridge chaud aux fruits", "Gâteau moelleux au chocolat vegan"];
         }
         if (choix.categorie === "boissons") {
-          plats = ["Smoothie bowl aux fruits"];
+          plats = ["Jus d’orange frais", "Smoothie banane-fraise", "Thé glacé maison"];
         }
       }
 
