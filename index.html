@@ -36,9 +36,6 @@
     .button.secondary {
       background: #2196F3;
     }
-    .button.danger {
-      background: #f44336;
-    }
     .hidden {
       display: none;
     }
@@ -48,65 +45,58 @@
       width: 80%;
       max-width: 400px;
     }
-    ul {
-      text-align: left;
+    img {
+      width: 100%;
+      max-width: 300px;
+      border-radius: 10px;
+      margin: 10px 0;
     }
   </style>
 </head>
 <body>
 
   <div class="container">
-    <!-- ÉTAPE 1 : ACCUEIL -->
     <div id="step1">
       <h1>Salut ! Si tu es vegan ou que tu veux redécouvrir la cuisine végane alors tu es sur le bon site 🌱</h1>
       <button class="button" onclick="goToStep(2)">Continuer</button>
     </div>
 
-    <!-- ÉTAPE 2 : CHAUD / FROID -->
     <div id="step2" class="hidden">
       <h2>Tu veux un plat chaud ou un plat froid ?</h2>
       <button class="button" onclick="setChoice('typePlat','chaud'); goToStep(3)">Chaud</button>
       <button class="button" onclick="setChoice('typePlat','froid'); goToStep(3)">Froid</button>
     </div>
 
-    <!-- ÉTAPE 3 : SALÉ / SUCRÉ -->
     <div id="step3" class="hidden">
       <h2>Tu préfères plutôt salé ou sucré ?</h2>
-      <button class="button" onclick="setChoice('gout','sale'); goToStep(4)">Salé</button>
-      <button class="button" onclick="setChoice('gout','sucre'); goToStep(4)">Sucré</button>
+      <button class="button" onclick="setChoice('gout','sale'); goToStep4()">Salé</button>
+      <button class="button" onclick="setChoice('gout','sucre'); goToStep4()">Sucré</button>
     </div>
 
-    <!-- ÉTAPE 4 : FÉCULENTS / LÉGUMES / PROTÉINES -->
     <div id="step4" class="hidden">
-      <h2>Tu aimes plutôt quoi aujourd’hui ?</h2>
-      <button class="button" onclick="setChoice('categorie','feculents'); goToStep(5)">Féculents (pâtes, riz, pommes de terre)</button>
-      <button class="button secondary" onclick="setChoice('categorie','legumes'); goToStep(5)">Légumes (salades, poêlées, soupes)</button>
-      <button class="button" onclick="setChoice('categorie','proteines'); goToStep(5)">Protéines végétales (tofu, pois chiches, lentilles)</button>
+      <h2 id="question4"></h2>
+      <div id="options4"></div>
     </div>
 
-    <!-- ÉTAPE 5 : ALLERGIES / ALIMENTS À ÉVITER -->
     <div id="step5" class="hidden">
       <h2>As-tu des allergies ou des aliments que tu n’aimes pas ?</h2>
-      <p>(Exemples : gluten, soja, fruits à coque, champignons…)</p>
-      <textarea id="allergies" rows="3" placeholder="Écris ici ce que tu veux éviter"></textarea>
+      <textarea id="allergies" rows="3" placeholder="Exemples : gluten, soja, noix, champignons..."></textarea>
       <br>
       <button class="button" onclick="goToStep(6)">Continuer</button>
     </div>
 
-    <!-- ÉTAPE 6 : BUDGET -->
     <div id="step6" class="hidden">
       <h2>Quel budget tu veux mettre pour ton repas ?</h2>
       <select id="budget">
         <option value="5">Moins de 5€</option>
         <option value="10">Moins de 10€</option>
         <option value="20">Moins de 20€</option>
-        <option value="100">Je m’en fiche du budget</option>
+        <option value="100">Peu importe</option>
       </select>
       <br><br>
       <button class="button" onclick="afficherResultats()">Voir les plats proposés</button>
     </div>
 
-    <!-- ÉTAPE 7 : RÉSULTATS -->
     <div id="step7" class="hidden">
       <h2>Voici des idées de plats pour toi :</h2>
       <div id="resultats"></div>
@@ -133,98 +123,96 @@
       choix[key] = value;
     }
 
+    function goToStep4() {
+      const q = document.getElementById("question4");
+      const opt = document.getElementById("options4");
+      opt.innerHTML = "";
+
+      if (choix.gout === "sale") {
+        q.innerText = "Tu veux plutôt quoi ?";
+        opt.innerHTML = `
+          <button class="button" onclick="setChoice('categorie','feculents'); goToStep(5)">Féculents</button>
+          <button class="button" onclick="setChoice('categorie','legumes'); goToStep(5)">Légumes</button>
+          <button class="button" onclick="setChoice('categorie','proteines'); goToStep(5)">Protéines végétales</button>
+        `;
+      } else {
+        q.innerText = "Quel type de sucré te tente ?";
+        opt.innerHTML = `
+          <button class="button" onclick="setChoice('categorie','fruits'); goToStep(5)">Fruits</button>
+          <button class="button" onclick="setChoice('categorie','desserts'); goToStep(5)">Desserts</button>
+          <button class="button" onclick="setChoice('categorie','boissons'); goToStep(5)">Boissons sucrées</button>
+        `;
+      }
+
+      goToStep(4);
+    }
+
     function afficherResultats() {
       const allergies = document.getElementById('allergies').value.toLowerCase();
       const budget = parseInt(document.getElementById('budget').value, 10);
 
       let plats = [];
 
-      // Base selon type chaud/froid + salé/sucré + catégorie
-      if (choix.typePlat === 'chaud' && choix.gout === 'sale' && choix.categorie === 'feculents') {
-        plats = [
-          "Gratin de pommes de terre et légumes",
-          "Pâtes complètes au pesto vegan",
-          "Risotto aux champignons"
-        ];
-      } else if (choix.typePlat === 'chaud' && choix.gout === 'sale' && choix.categorie === 'legumes') {
-        plats = [
-          "Soupe de légumes de saison",
-          "Poêlée de légumes au tofu",
-          "Ratatouille maison"
-        ];
-      } else if (choix.typePlat === 'chaud' && choix.gout === 'sale' && choix.categorie === 'proteines') {
-        plats = [
-          "Curry de lentilles corail",
-          "Chili sin carne (haricots rouges)",
-          "Tofu mariné avec légumes rôtis"
-        ];
-      } else if (choix.typePlat === 'chaud' && choix.gout === 'sucre') {
-        plats = [
-          "Crêpes vegan",
-          "Porridge chaud aux fruits",
-          "Gâteau moelleux au chocolat vegan"
-        ];
-      } else if (choix.typePlat === 'froid' && choix.gout === 'sale' && choix.categorie === 'feculents') {
-        plats = [
-          "Salade de pâtes aux légumes",
-          "Taboulé au quinoa",
-          "Salade de riz aux pois chiches"
-        ];
-      } else if (choix.typePlat === 'froid' && choix.gout === 'sale' && choix.categorie === 'legumes') {
-        plats = [
-          "Salade de crudités avec houmous",
-          "Wraps de légumes et houmous",
-          "Salade de tomates, concombre et tofu"
-        ];
-      } else if (choix.typePlat === 'froid' && choix.gout === 'sale' && choix.categorie === 'proteines') {
-        plats = [
-          "Salade de pois chiches",
-          "Buddha bowl (lentilles, légumes, céréales)",
-          "Salade de haricots rouges et maïs"
-        ];
-      } else if (choix.typePlat === 'froid' && choix.gout === 'sucre') {
-        plats = [
-          "Smoothie bowl aux fruits",
-          "Salade de fruits frais",
-          "Yaourt soja avec granola"
-        ];
-      } else {
-        plats = [
-          "Buddha bowl complet",
-          "Assiette composée (féculents + légumes + protéines)",
-          "Plat vegan surprise"
-        ];
+      const images = {
+        "Gratin de pommes de terre et légumes": "https://picsum.photos/300?random=1",
+        "Pâtes complètes au pesto vegan": "https://picsum.photos/300?random=2",
+        "Risotto aux champignons": "https://picsum.photos/300?random=3",
+        "Soupe de légumes de saison": "https://picsum.photos/300?random=4",
+        "Poêlée de légumes au tofu": "https://picsum.photos/300?random=5",
+        "Ratatouille maison": "https://picsum.photos/300?random=6",
+        "Curry de lentilles corail": "https://picsum.photos/300?random=7",
+        "Chili sin carne": "https://picsum.photos/300?random=8",
+        "Tofu mariné avec légumes rôtis": "https://picsum.photos/300?random=9",
+        "Crêpes vegan": "https://picsum.photos/300?random=10",
+        "Porridge chaud aux fruits": "https://picsum.photos/300?random=11",
+        "Gâteau moelleux au chocolat vegan": "https://picsum.photos/300?random=12",
+        "Smoothie bowl aux fruits": "https://picsum.photos/300?random=16",
+        "Salade de fruits frais": "https://picsum.photos/300?random=17"
+      };
+
+      if (choix.gout === "sale") {
+        if (choix.categorie === "feculents") {
+          plats = ["Gratin de pommes de terre et légumes", "Pâtes complètes au pesto vegan", "Risotto aux champignons"];
+        }
+        if (choix.categorie === "legumes") {
+          plats = ["Soupe de légumes de saison", "Poêlée de légumes au tofu", "Ratatouille maison"];
+        }
+        if (choix.categorie === "proteines") {
+          plats = ["Curry de lentilles corail", "Chili sin carne", "Tofu mariné avec légumes rôtis"];
+        }
       }
 
-      // Filtrage simple selon allergies / aliments à éviter
+      if (choix.gout === "sucre") {
+        if (choix.categorie === "fruits") {
+          plats = ["Smoothie bowl aux fruits", "Salade de fruits frais"];
+        }
+        if (choix.categorie === "desserts") {
+          plats = ["Crêpes vegan", "Porridge chaud aux fruits", "Gâteau moelleux au chocolat vegan"];
+        }
+        if (choix.categorie === "boissons") {
+          plats = ["Smoothie bowl aux fruits"];
+        }
+      }
+
       if (allergies.includes("gluten")) {
-        plats = plats.filter(p => !p.toLowerCase().includes("pâtes") && !p.toLowerCase().includes("risotto") && !p.toLowerCase().includes("taboulé"));
+        plats = plats.filter(p => !p.toLowerCase().includes("pâtes") && !p.toLowerCase().includes("risotto"));
       }
       if (allergies.includes("soja")) {
-        plats = plats.filter(p => !p.toLowerCase().includes("tofu") && !p.toLowerCase().includes("yaourt soja"));
-      }
-      if (allergies.includes("noix") || allergies.includes("fruits à coque")) {
-        plats = plats.filter(p => !p.toLowerCase().includes("granola"));
+        plats = plats.filter(p => !p.toLowerCase().includes("tofu"));
       }
 
-      // Filtrage très simple selon budget (juste pour l’exemple)
-      if (budget <= 5) {
-        plats = plats.slice(0, 2);
-      } else if (budget <= 10) {
-        plats = plats.slice(0, 3);
-      }
+      if (budget <= 5) plats = plats.slice(0, 1);
+      if (budget <= 10) plats = plats.slice(0, 2);
 
       const div = document.getElementById('resultats');
-      if (plats.length === 0) {
-        div.innerHTML = "<p>Aucun plat ne correspond exactement à tes critères, mais tu peux essayer une salade de légumes, des lentilles ou des pommes de terre rôties, c’est presque toujours possible 🌱</p>";
-      } else {
-        div.innerHTML = "<ul>" + plats.map(p => "<li>" + p + "</li>").join("") + "</ul>";
-      }
+      div.innerHTML = plats.map(p => `
+        <h3>${p}</h3>
+        <img src="${images[p]}" alt="${p}">
+      `).join("");
 
       goToStep(7);
     }
 
-    // On commence à l’étape 1
     goToStep(1);
   </script>
 
