@@ -11,9 +11,9 @@
     }
     .container {
       max-width: 700px;
-      margin: 60px auto;
+      margin: 40px auto;
       background: white;
-      padding: 30px;
+      padding: 20px;
       border-radius: 12px;
       text-align: center;
       box-shadow: 0 0 15px rgba(0,0,0,0.1);
@@ -45,11 +45,60 @@
       width: 80%;
       max-width: 400px;
     }
-    img {
+
+    /* STYLE DES CARTES */
+    .card {
+      background: white;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 0 10px rgba(0,0,0,0.15);
+      margin: 20px auto;
+      width: 90%;
+      text-align: left;
+      cursor: pointer;
+    }
+    .card img {
       width: 100%;
-      max-width: 300px;
-      border-radius: 10px;
-      margin: 10px 0;
+      height: 200px;
+      object-fit: cover;
+    }
+    .card-info {
+      padding: 15px;
+    }
+    .card-title {
+      font-size: 20px;
+      font-weight: bold;
+      margin-bottom: 8px;
+    }
+
+    /* STYLE RECETTE */
+    .recette {
+      background: white;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 0 10px rgba(0,0,0,0.15);
+      margin: 20px auto;
+      width: 90%;
+      text-align: left;
+      padding-bottom: 20px;
+    }
+    .recette img {
+      width: 100%;
+      height: 250px;
+      object-fit: cover;
+    }
+    .recette h3 {
+      font-size: 24px;
+      margin: 15px;
+    }
+    .recette-section {
+      padding: 0 15px 10px 15px;
+    }
+    .recette-section h4 {
+      margin-bottom: 5px;
+    }
+    .recette-section ul {
+      margin-top: 0;
     }
   </style>
 </head>
@@ -94,12 +143,19 @@
         <option value="100">Peu importe</option>
       </select>
       <br><br>
-      <button class="button" onclick="afficherResultats()">Voir les plats proposés</button>
+      <button class="button" onclick="afficherPlats()">Voir les plats proposés</button>
     </div>
 
     <div id="step7" class="hidden">
       <h2>Voici des idées de plats pour toi :</h2>
       <div id="resultats"></div>
+      <br>
+      <button class="button secondary" onclick="goToStep(2)">Recommencer</button>
+    </div>
+
+    <div id="step8" class="hidden">
+      <h2>Recette :</h2>
+      <div id="recette"></div>
       <br>
       <button class="button secondary" onclick="goToStep(2)">Recommencer</button>
     </div>
@@ -112,8 +168,251 @@
       categorie: null
     };
 
+    const images = {
+      "Gratin de pommes de terre et légumes": "https://images.unsplash.com/photo-1604908177522-432c5d3e6f1f",
+      "Pâtes complètes au pesto vegan": "https://images.unsplash.com/photo-1525755662778-989d0524087e",
+      "Risotto aux champignons": "https://images.unsplash.com/photo-1604908554024-5f3e6f2eefd1",
+      "Soupe de légumes de saison": "https://images.unsplash.com/photo-1543353071-087092ec393e",
+      "Poêlée de légumes au tofu": "https://images.unsplash.com/photo-1512621776951-a57141f2eefd",
+      "Ratatouille maison": "https://images.unsplash.com/photo-1504674900247-0877df9cc836",
+      "Curry de lentilles corail": "https://images.unsplash.com/photo-1605475127913-3f6e9d8bca1a",
+      "Chili sin carne": "https://images.unsplash.com/photo-1552332386-f8dd00dc2f85",
+      "Tofu mariné avec légumes rôtis": "https://images.unsplash.com/photo-1512621776951-a57141f2eefd",
+      "Crêpes vegan": "https://images.unsplash.com/photo-1587731350924-5b1c1e3f5f3e",
+      "Porridge chaud aux fruits": "https://images.unsplash.com/photo-1512621776951-a57141f2eefd",
+      "Gâteau moelleux au chocolat vegan": "https://images.unsplash.com/photo-1601972599720-6f3fdf6f9a3b",
+      "Smoothie bowl aux fruits": "https://images.unsplash.com/photo-1506084868230-bb9d95c24759",
+      "Salade de fruits frais": "https://images.unsplash.com/photo-1490474418585-ba9bad8fd0ea",
+      "Jus d’orange frais": "https://images.unsplash.com/photo-1571689936045-7e3c3e5c8e2f",
+      "Smoothie banane-fraise": "https://images.unsplash.com/photo-1497534446932-c925b458314e",
+      "Thé glacé maison": "https://images.unsplash.com/photo-1507914372361-3dbe39f6a4f6"
+    };
+
+    const recettes = {
+      "Gratin de pommes de terre et légumes": {
+        ingredients: [
+          "Pommes de terre",
+          "Carottes",
+          "Courgettes",
+          "Crème végétale",
+          "Ail",
+          "Sel, poivre"
+        ],
+        etapes: [
+          "Couper les légumes en rondelles.",
+          "Mélanger avec la crème végétale.",
+          "Cuire 40 min à 180°C."
+        ]
+      },
+
+      "Pâtes complètes au pesto vegan": {
+        ingredients: [
+          "Pâtes complètes",
+          "Basilic",
+          "Ail",
+          "Huile d’olive",
+          "Levure maltée"
+        ],
+        etapes: [
+          "Cuire les pâtes.",
+          "Mixer le basilic, l’ail, l’huile et la levure.",
+          "Mélanger et servir."
+        ]
+      },
+
+      "Risotto aux champignons": {
+        ingredients: [
+          "Riz arborio",
+          "Champignons",
+          "Bouillon",
+          "Oignon",
+          "Crème végétale"
+        ],
+        etapes: [
+          "Faire revenir l’oignon.",
+          "Ajouter le riz puis le bouillon petit à petit.",
+          "Ajouter les champignons et la crème."
+        ]
+      },
+
+      "Soupe de légumes de saison": {
+        ingredients: [
+          "Carottes",
+          "Poireaux",
+          "Pommes de terre",
+          "Bouillon"
+        ],
+        etapes: [
+          "Couper les légumes.",
+          "Cuire 25 min.",
+          "Mixer."
+        ]
+      },
+
+      "Poêlée de légumes au tofu": {
+        ingredients: [
+          "Tofu",
+          "Poivrons",
+          "Courgettes",
+          "Sauce soja"
+        ],
+        etapes: [
+          "Couper le tofu.",
+          "Faire revenir les légumes.",
+          "Ajouter le tofu et la sauce."
+        ]
+      },
+
+      "Ratatouille maison": {
+        ingredients: [
+          "Aubergines",
+          "Courgettes",
+          "Tomates",
+          "Poivrons"
+        ],
+        etapes: [
+          "Couper les légumes.",
+          "Cuire 45 min à feu doux."
+        ]
+      },
+
+      "Curry de lentilles corail": {
+        ingredients: [
+          "Lentilles corail",
+          "Lait de coco",
+          "Curry",
+          "Oignon"
+        ],
+        etapes: [
+          "Faire revenir l’oignon.",
+          "Ajouter les lentilles et le lait de coco.",
+          "Cuire 20 min."
+        ]
+      },
+
+      "Chili sin carne": {
+        ingredients: [
+          "Haricots rouges",
+          "Maïs",
+          "Tomates",
+          "Épices chili"
+        ],
+        etapes: [
+          "Faire revenir les légumes.",
+          "Ajouter les haricots.",
+          "Cuire 20 min."
+        ]
+      },
+
+      "Tofu mariné avec légumes rôtis": {
+        ingredients: [
+          "Tofu",
+          "Légumes",
+          "Marinade soja"
+        ],
+        etapes: [
+          "Mariner le tofu.",
+          "Rôtir les légumes.",
+          "Assembler."
+        ]
+      },
+
+      "Crêpes vegan": {
+        ingredients: [
+          "Farine",
+          "Lait végétal",
+          "Sucre",
+          "Huile"
+        ],
+        etapes: [
+          "Mélanger.",
+          "Cuire à la poêle."
+        ]
+      },
+
+      "Porridge chaud aux fruits": {
+        ingredients: [
+          "Flocons d’avoine",
+          "Lait végétal",
+          "Fruits"
+        ],
+        etapes: [
+          "Cuire l’avoine.",
+          "Ajouter les fruits."
+        ]
+      },
+
+      "Gâteau moelleux au chocolat vegan": {
+        ingredients: [
+          "Farine",
+          "Cacao",
+          "Lait végétal",
+          "Sucre"
+        ],
+        etapes: [
+          "Mélanger.",
+          "Cuire 30 min à 180°C."
+        ]
+      },
+
+      "Smoothie bowl aux fruits": {
+        ingredients: [
+          "Banane",
+          "Fruits rouges",
+          "Lait végétal"
+        ],
+        etapes: [
+          "Mixer.",
+          "Servir dans un bol."
+        ]
+      },
+
+      "Salade de fruits frais": {
+        ingredients: [
+          "Fruits variés"
+        ],
+        etapes: [
+          "Couper les fruits.",
+          "Mélanger."
+        ]
+      },
+
+      "Jus d’orange frais": {
+        ingredients: [
+          "Oranges"
+        ],
+        etapes: [
+          "Presser les oranges."
+        ]
+      },
+
+      "Smoothie banane-fraise": {
+        ingredients: [
+          "Banane",
+          "Fraises",
+          "Lait végétal"
+        ],
+        etapes: [
+          "Mixer."
+        ]
+      },
+
+      "Thé glacé maison": {
+        ingredients: [
+          "Thé",
+          "Citron",
+          "Sucre"
+        ],
+        etapes: [
+          "Infuser.",
+          "Ajouter le citron.",
+          "Mettre au frais."
+        ]
+      }
+    };
+
     function goToStep(n) {
-      for (let i = 1; i <= 7; i++) {
+      for (let i = 1; i <= 8; i++) {
         document.getElementById('step' + i).classList.add('hidden');
       }
       document.getElementById('step' + n).classList.remove('hidden');
@@ -147,31 +446,11 @@
       goToStep(4);
     }
 
-    function afficherResultats() {
+    function afficherPlats() {
       const allergies = document.getElementById('allergies').value.toLowerCase();
       const budget = parseInt(document.getElementById('budget').value, 10);
 
       let plats = [];
-
-      const images = {
-        "Gratin de pommes de terre et légumes": "https://images.unsplash.com/photo-1604908177522-432c5d3e6f1f",
-        "Pâtes complètes au pesto vegan": "https://images.unsplash.com/photo-1525755662778-989d0524087e",
-        "Risotto aux champignons": "https://images.unsplash.com/photo-1604908554024-5f3e6f2eefd1",
-        "Soupe de légumes de saison": "https://images.unsplash.com/photo-1543353071-087092ec393e",
-        "Poêlée de légumes au tofu": "https://images.unsplash.com/photo-1512621776951-a57141f2eefd",
-        "Ratatouille maison": "https://images.unsplash.com/photo-1504674900247-0877df9cc836",
-        "Curry de lentilles corail": "https://images.unsplash.com/photo-1605475127913-3f6e9d8bca1a",
-        "Chili sin carne": "https://images.unsplash.com/photo-1552332386-f8dd00dc2f85",
-        "Tofu mariné avec légumes rôtis": "https://images.unsplash.com/photo-1512621776951-a57141f2eefd",
-        "Crêpes vegan": "https://images.unsplash.com/photo-1587731350924-5b1c1e3f5f3e",
-        "Porridge chaud aux fruits": "https://images.unsplash.com/photo-1512621776951-a57141f2eefd",
-        "Gâteau moelleux au chocolat vegan": "https://images.unsplash.com/photo-1601972599720-6f3fdf6f9a3b",
-        "Smoothie bowl aux fruits": "https://images.unsplash.com/photo-1506084868230-bb9d95c24759",
-        "Salade de fruits frais": "https://images.unsplash.com/photo-1490474418585-ba9bad8fd0ea",
-        "Jus d’orange frais": "https://images.unsplash.com/photo-1571689936045-7e3c3e5c8e2f",
-        "Smoothie banane-fraise": "https://images.unsplash.com/photo-1497534446932-c925b458314e",
-        "Thé glacé maison": "https://images.unsplash.com/photo-1507914372361-3dbe39f6a4f6"
-      };
 
       if (choix.gout === "sale") {
         if (choix.categorie === "feculents") {
@@ -205,19 +484,4 @@
       }
 
       if (budget <= 5) plats = plats.slice(0, 1);
-      if (budget <= 10) plats = plats.slice(0, 2);
-
-      const div = document.getElementById('resultats');
-      div.innerHTML = plats.map(p => `
-        <h3>${p}</h3>
-        <img src="${images[p]}" alt="${p}">
-      `).join("");
-
-      goToStep(7);
-    }
-
-    goToStep(1);
-  </script>
-
-</body>
-</html>
+      if (budget <= 10) plats
