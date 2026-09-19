@@ -484,4 +484,8 @@
       }
 
       if (budget <= 5) plats = plats.slice(0, 1);
-      if (budget <= 10) plats
+      if (budget <= 10) plats = plats.slice(0, 2);
+
+      const div = document.getElementById('resultats');
+      div.innerHTML = plats.map(p => `
+        <div class="card" onclick="afficherRec
