@@ -3,12 +3,14 @@
 <head>
   <meta charset="UTF-8">
   <title>Assistant cuisine végane</title>
+
   <style>
     body {
       font-family: Arial, sans-serif;
       background: #f4f4f4;
       margin: 0;
     }
+
     .container {
       max-width: 700px;
       margin: 40px auto;
@@ -18,35 +20,27 @@
       text-align: center;
       box-shadow: 0 0 15px rgba(0,0,0,0.1);
     }
-    h1, h2 {
-      margin-bottom: 20px;
-    }
+
     .button {
       display: inline-block;
       margin: 10px;
       padding: 10px 20px;
       background: #4CAF50;
       color: white;
-      text-decoration: none;
       border-radius: 8px;
       font-size: 16px;
       cursor: pointer;
       border: none;
     }
+
     .button.secondary {
       background: #2196F3;
     }
+
     .hidden {
       display: none;
     }
-    input, select, textarea {
-      padding: 8px;
-      margin: 8px 0;
-      width: 80%;
-      max-width: 400px;
-    }
 
-    /* STYLE DES CARTES */
     .card {
       background: white;
       border-radius: 12px;
@@ -57,21 +51,22 @@
       text-align: left;
       cursor: pointer;
     }
+
     .card img {
       width: 100%;
       height: 200px;
       object-fit: cover;
     }
+
     .card-info {
       padding: 15px;
     }
+
     .card-title {
       font-size: 20px;
       font-weight: bold;
-      margin-bottom: 8px;
     }
 
-    /* STYLE RECETTE */
     .recette {
       background: white;
       border-radius: 12px;
@@ -80,28 +75,20 @@
       margin: 20px auto;
       width: 90%;
       text-align: left;
-      padding-bottom: 20px;
     }
+
     .recette img {
       width: 100%;
       height: 250px;
       object-fit: cover;
     }
-    .recette h3 {
-      font-size: 24px;
-      margin: 15px;
-    }
+
     .recette-section {
-      padding: 0 15px 10px 15px;
-    }
-    .recette-section h4 {
-      margin-bottom: 5px;
-    }
-    .recette-section ul {
-      margin-top: 0;
+      padding: 15px;
     }
   </style>
 </head>
+
 <body>
 
   <div class="container">
@@ -109,7 +96,6 @@
       <h1>Salut ! Si tu es vegan ou que tu veux redécouvrir la cuisine végane alors tu es sur le bon site 🌱</h1>
       <button class="button" onclick="goToStep(2)">Continuer</button>
     </div>
-
     <div id="step2" class="hidden">
       <h2>Tu veux un plat chaud ou un plat froid ?</h2>
       <button class="button" onclick="setChoice('typePlat','chaud'); goToStep(3)">Chaud</button>
@@ -129,7 +115,7 @@
 
     <div id="step5" class="hidden">
       <h2>As-tu des allergies ou des aliments que tu n’aimes pas ?</h2>
-      <textarea id="allergies" rows="3" placeholder="Exemples : gluten, soja, noix, champignons..."></textarea>
+      <textarea id="allergies" rows="3" placeholder="Exemples : gluten, soja, noix..."></textarea>
       <br>
       <button class="button" onclick="goToStep(6)">Continuer</button>
     </div>
@@ -145,7 +131,6 @@
       <br><br>
       <button class="button" onclick="afficherPlats()">Voir les plats proposés</button>
     </div>
-
     <div id="step7" class="hidden">
       <h2>Voici des idées de plats pour toi :</h2>
       <div id="resultats"></div>
@@ -160,14 +145,46 @@
       <button class="button secondary" onclick="goToStep(2)">Recommencer</button>
     </div>
   </div>
-
   <script>
+    function goToStep(n) {
+      for (let i = 1; i <= 8; i++) {
+        document.getElementById("step" + i).classList.add("hidden");
+      }
+      document.getElementById("step" + n).classList.remove("hidden");
+    }
+
     const choix = {
       typePlat: null,
       gout: null,
       categorie: null
     };
 
+    function setChoice(key, value) {
+      choix[key] = value;
+    }
+
+    function goToStep4() {
+      const q = document.getElementById("question4");
+      const opt = document.getElementById("options4");
+
+      if (choix.gout === "sale") {
+        q.innerText = "Tu veux plutôt quoi ?";
+        opt.innerHTML = `
+          <button class="button" onclick="setChoice('categorie','feculents'); goToStep(5)">Féculents</button>
+          <button class="button" onclick="setChoice('categorie','legumes'); goToStep(5)">Légumes</button>
+          <button class="button" onclick="setChoice('categorie','proteines'); goToStep(5)">Protéines végétales</button>
+        `;
+      } else {
+        q.innerText = "Quel type de sucré te tente ?";
+        opt.innerHTML = `
+          <button class="button" onclick="setChoice('categorie','fruits'); goToStep(5)">Fruits</button>
+          <button class="button" onclick="setChoice('categorie','desserts'); goToStep(5)">Desserts</button>
+          <button class="button" onclick="setChoice('categorie','boissons'); goToStep(5)">Boissons sucrées</button>
+        `;
+      }
+
+      goToStep(4);
+    }
     const images = {
       "Gratin de pommes de terre et légumes": "https://images.unsplash.com/photo-1604908177522-432c5d3e6f1f",
       "Pâtes complètes au pesto vegan": "https://images.unsplash.com/photo-1525755662778-989d0524087e",
@@ -190,295 +207,97 @@
 
     const recettes = {
       "Gratin de pommes de terre et légumes": {
-        ingredients: [
-          "Pommes de terre",
-          "Carottes",
-          "Courgettes",
-          "Crème végétale",
-          "Ail",
-          "Sel, poivre"
-        ],
-        etapes: [
-          "Couper les légumes en rondelles.",
-          "Mélanger avec la crème végétale.",
-          "Cuire 40 min à 180°C."
-        ]
+        ingredients: ["Pommes de terre", "Carottes", "Courgettes", "Crème végétale", "Ail", "Sel, poivre"],
+        etapes: ["Couper les légumes.", "Mélanger avec la crème.", "Cuire 40 min à 180°C."]
       },
-
       "Pâtes complètes au pesto vegan": {
-        ingredients: [
-          "Pâtes complètes",
-          "Basilic",
-          "Ail",
-          "Huile d’olive",
-          "Levure maltée"
-        ],
-        etapes: [
-          "Cuire les pâtes.",
-          "Mixer le basilic, l’ail, l’huile et la levure.",
-          "Mélanger et servir."
-        ]
+        ingredients: ["Pâtes complètes", "Basilic", "Ail", "Huile d’olive", "Levure maltée"],
+        etapes: ["Cuire les pâtes.", "Mixer le pesto.", "Mélanger."]
       },
-
       "Risotto aux champignons": {
-        ingredients: [
-          "Riz arborio",
-          "Champignons",
-          "Bouillon",
-          "Oignon",
-          "Crème végétale"
-        ],
-        etapes: [
-          "Faire revenir l’oignon.",
-          "Ajouter le riz puis le bouillon petit à petit.",
-          "Ajouter les champignons et la crème."
-        ]
+        ingredients: ["Riz arborio", "Champignons", "Bouillon", "Oignon", "Crème végétale"],
+        etapes: ["Faire revenir l’oignon.", "Ajouter le riz.", "Ajouter les champignons."]
       },
-
       "Soupe de légumes de saison": {
-        ingredients: [
-          "Carottes",
-          "Poireaux",
-          "Pommes de terre",
-          "Bouillon"
-        ],
-        etapes: [
-          "Couper les légumes.",
-          "Cuire 25 min.",
-          "Mixer."
-        ]
+        ingredients: ["Carottes", "Poireaux", "Pommes de terre", "Bouillon"],
+        etapes: ["Couper les légumes.", "Cuire 25 min.", "Mixer."]
       },
-
       "Poêlée de légumes au tofu": {
-        ingredients: [
-          "Tofu",
-          "Poivrons",
-          "Courgettes",
-          "Sauce soja"
-        ],
-        etapes: [
-          "Couper le tofu.",
-          "Faire revenir les légumes.",
-          "Ajouter le tofu et la sauce."
-        ]
+        ingredients: ["Tofu", "Poivrons", "Courgettes", "Sauce soja"],
+        etapes: ["Couper le tofu.", "Faire revenir les légumes.", "Ajouter le tofu."]
       },
-
       "Ratatouille maison": {
-        ingredients: [
-          "Aubergines",
-          "Courgettes",
-          "Tomates",
-          "Poivrons"
-        ],
-        etapes: [
-          "Couper les légumes.",
-          "Cuire 45 min à feu doux."
-        ]
+        ingredients: ["Aubergines", "Courgettes", "Tomates", "Poivrons"],
+        etapes: ["Couper les légumes.", "Cuire 45 min."]
       },
-
       "Curry de lentilles corail": {
-        ingredients: [
-          "Lentilles corail",
-          "Lait de coco",
-          "Curry",
-          "Oignon"
-        ],
-        etapes: [
-          "Faire revenir l’oignon.",
-          "Ajouter les lentilles et le lait de coco.",
-          "Cuire 20 min."
-        ]
+        ingredients: ["Lentilles corail", "Lait de coco", "Curry", "Oignon"],
+        etapes: ["Faire revenir l’oignon.", "Ajouter les lentilles.", "Cuire 20 min."]
       },
-
       "Chili sin carne": {
-        ingredients: [
-          "Haricots rouges",
-          "Maïs",
-          "Tomates",
-          "Épices chili"
-        ],
-        etapes: [
-          "Faire revenir les légumes.",
-          "Ajouter les haricots.",
-          "Cuire 20 min."
-        ]
+        ingredients: ["Haricots rouges", "Maïs", "Tomates", "Épices chili"],
+        etapes: ["Faire revenir les légumes.", "Ajouter les haricots.", "Cuire 20 min."]
       },
-
       "Tofu mariné avec légumes rôtis": {
-        ingredients: [
-          "Tofu",
-          "Légumes",
-          "Marinade soja"
-        ],
-        etapes: [
-          "Mariner le tofu.",
-          "Rôtir les légumes.",
-          "Assembler."
-        ]
+        ingredients: ["Tofu", "Légumes", "Marinade soja"],
+        etapes: ["Mariner le tofu.", "Rôtir les légumes.", "Assembler."]
       },
-
       "Crêpes vegan": {
-        ingredients: [
-          "Farine",
-          "Lait végétal",
-          "Sucre",
-          "Huile"
-        ],
-        etapes: [
-          "Mélanger.",
-          "Cuire à la poêle."
-        ]
+        ingredients: ["Farine", "Lait végétal", "Sucre", "Huile"],
+        etapes: ["Mélanger.", "Cuire."]
       },
-
       "Porridge chaud aux fruits": {
-        ingredients: [
-          "Flocons d’avoine",
-          "Lait végétal",
-          "Fruits"
-        ],
-        etapes: [
-          "Cuire l’avoine.",
-          "Ajouter les fruits."
-        ]
+        ingredients: ["Flocons d’avoine", "Lait végétal", "Fruits"],
+        etapes: ["Cuire l’avoine.", "Ajouter les fruits."]
       },
-
       "Gâteau moelleux au chocolat vegan": {
-        ingredients: [
-          "Farine",
-          "Cacao",
-          "Lait végétal",
-          "Sucre"
-        ],
-        etapes: [
-          "Mélanger.",
-          "Cuire 30 min à 180°C."
-        ]
+        ingredients: ["Farine", "Cacao", "Lait végétal", "Sucre"],
+        etapes: ["Mélanger.", "Cuire 30 min."]
       },
-
       "Smoothie bowl aux fruits": {
-        ingredients: [
-          "Banane",
-          "Fruits rouges",
-          "Lait végétal"
-        ],
-        etapes: [
-          "Mixer.",
-          "Servir dans un bol."
-        ]
+        ingredients: ["Banane", "Fruits rouges", "Lait végétal"],
+        etapes: ["Mixer.", "Servir."]
       },
-
       "Salade de fruits frais": {
-        ingredients: [
-          "Fruits variés"
-        ],
-        etapes: [
-          "Couper les fruits.",
-          "Mélanger."
-        ]
+        ingredients: ["Fruits variés"],
+        etapes: ["Couper.", "Mélanger."]
       },
-
       "Jus d’orange frais": {
-        ingredients: [
-          "Oranges"
-        ],
-        etapes: [
-          "Presser les oranges."
-        ]
+        ingredients: ["Oranges"],
+        etapes: ["Presser."]
       },
-
       "Smoothie banane-fraise": {
-        ingredients: [
-          "Banane",
-          "Fraises",
-          "Lait végétal"
-        ],
-        etapes: [
-          "Mixer."
-        ]
+        ingredients: ["Banane", "Fraises", "Lait végétal"],
+        etapes: ["Mixer."]
       },
-
       "Thé glacé maison": {
-        ingredients: [
-          "Thé",
-          "Citron",
-          "Sucre"
-        ],
-        etapes: [
-          "Infuser.",
-          "Ajouter le citron.",
-          "Mettre au frais."
-        ]
+        ingredients: ["Thé", "Citron", "Sucre"],
+        etapes: ["Infuser.", "Ajouter le citron.", "Mettre au frais."]
       }
     };
 
-    function goToStep(n) {
-      for (let i = 1; i <= 8; i++) {
-        document.getElementById('step' + i).classList.add('hidden');
-      }
-      document.getElementById('step' + n).classList.remove('hidden');
-    }
-
-    function setChoice(key, value) {
-      choix[key] = value;
-    }
-
-    function goToStep4() {
-      const q = document.getElementById("question4");
-      const opt = document.getElementById("options4");
-      opt.innerHTML = "";
-
-      if (choix.gout === "sale") {
-        q.innerText = "Tu veux plutôt quoi ?";
-        opt.innerHTML = `
-          <button class="button" onclick="setChoice('categorie','feculents'); goToStep(5)">Féculents</button>
-          <button class="button" onclick="setChoice('categorie','legumes'); goToStep(5)">Légumes</button>
-          <button class="button" onclick="setChoice('categorie','proteines'); goToStep(5)">Protéines végétales</button>
-        `;
-      } else {
-        q.innerText = "Quel type de sucré te tente ?";
-        opt.innerHTML = `
-          <button class="button" onclick="setChoice('categorie','fruits'); goToStep(5)">Fruits</button>
-          <button class="button" onclick="setChoice('categorie','desserts'); goToStep(5)">Desserts</button>
-          <button class="button" onclick="setChoice('categorie','boissons'); goToStep(5)">Boissons sucrées</button>
-        `;
-      }
-
-      goToStep(4);
-    }
-
     function afficherPlats() {
-      const allergies = document.getElementById('allergies').value.toLowerCase();
-      const budget = parseInt(document.getElementById('budget').value, 10);
+      const allergies = document.getElementById("allergies").value.toLowerCase();
+      const budget = parseInt(document.getElementById("budget").value);
 
       let plats = [];
 
       if (choix.gout === "sale") {
-        if (choix.categorie === "feculents") {
-          plats = ["Gratin de pommes de terre et légumes", "Pâtes complètes au pesto vegan", "Risotto aux champignons"];
-        }
-        if (choix.categorie === "legumes") {
-          plats = ["Soupe de légumes de saison", "Poêlée de légumes au tofu", "Ratatouille maison"];
-        }
-        if (choix.categorie === "proteines") {
-          plats = ["Curry de lentilles corail", "Chili sin carne", "Tofu mariné avec légumes rôtis"];
-        }
+        if (choix.categorie === "feculents") plats = ["Gratin de pommes de terre et légumes", "Pâtes complètes au pesto vegan", "Risotto aux champignons"];
+        if (choix.categorie === "legumes") plats = ["Soupe de légumes de saison", "Poêlée de légumes au tofu", "Ratatouille maison"];
+        if (choix.categorie === "proteines") plats = ["Curry de lentilles corail", "Chili sin carne", "Tofu mariné avec légumes rôtis"];
       }
 
       if (choix.gout === "sucre") {
-        if (choix.categorie === "fruits") {
-          plats = ["Smoothie bowl aux fruits", "Salade de fruits frais"];
-        }
-        if (choix.categorie === "desserts") {
-          plats = ["Crêpes vegan", "Porridge chaud aux fruits", "Gâteau moelleux au chocolat vegan"];
-        }
-        if (choix.categorie === "boissons") {
-          plats = ["Jus d’orange frais", "Smoothie banane-fraise", "Thé glacé maison"];
-        }
+        if (choix.categorie === "fruits") plats = ["Smoothie bowl aux fruits", "Salade de fruits frais"];
+        if (choix.categorie === "desserts") plats = ["Crêpes vegan", "Porridge chaud aux fruits", "Gâteau moelleux au chocolat vegan"];
+        if (choix.categorie === "boissons") plats = ["Jus d’orange frais", "Smoothie banane-fraise", "Thé glacé maison"];
       }
 
       if (allergies.includes("gluten")) {
         plats = plats.filter(p => !p.toLowerCase().includes("pâtes") && !p.toLowerCase().includes("risotto"));
       }
+
       if (allergies.includes("soja")) {
         plats = plats.filter(p => !p.toLowerCase().includes("tofu"));
       }
@@ -486,6 +305,47 @@
       if (budget <= 5) plats = plats.slice(0, 1);
       if (budget <= 10) plats = plats.slice(0, 2);
 
-      const div = document.getElementById('resultats');
-      div.innerHTML = plats.map(p => `
-        <div class="card" onclick="afficherRec
+      const div = document.getElementById("resultats");
+      div.innerHTML = "";
+
+      plats.forEach(p => {
+        div.innerHTML += `
+          <div class="card" onclick="afficherRecette('${p}')">
+            <img src="${images[p]}" alt="${p}">
+            <div class="card-info">
+              <div class="card-title">${p}</div>
+            </div>
+          </div>
+        `;
+      });
+
+      goToStep(7);
+    }
+
+    function afficherRecette(nom) {
+      const r = recettes[nom];
+      const div = document.getElementById("recette");
+
+      div.innerHTML = `
+        <div class="recette">
+          <img src="${images[nom]}" alt="${nom}">
+          <h3>${nom}</h3>
+
+          <div class="recette-section">
+            <h4>Ingrédients :</h4>
+            <ul>${r.ingredients.map(i => `<li>${i}</li>`).join("")}</ul>
+          </div>
+
+          <div class="recette-section">
+            <h4>Étapes :</h4>
+            <ul>${r.etapes.map(e => `<li>${e}</li>`).join("")}</ul>
+          </div>
+        </div>
+      `;
+
+      goToStep(8);
+    }
+  </script>
+
+</body>
+</html>
